@@ -43,7 +43,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public void OnAnimatorMove(InputAction.CallbackContext context)
+    public void Move(InputAction.CallbackContext context)
     {
         horizontalMovement = context.ReadValue<Vector2>().x;
     }

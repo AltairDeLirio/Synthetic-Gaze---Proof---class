@@ -1,9 +1,11 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEditor.Searcher.SearcherWindow.Alignment;
 
 public class PlayerMovement : MonoBehaviour
 {
     public Rigidbody2D rb;
+    public Animator animator;
     [Header("Movement")]
     public float moveSpeed = 5f;
 
@@ -28,6 +30,68 @@ public class PlayerMovement : MonoBehaviour
         rb.linearVelocity = new Vector2(horizontalMovement * moveSpeed, rb.linearVelocity.y);
         GroundCheck();
         Gravity();
+
+        if (horizontalMovement < 0)
+        {
+            animator.SetBool("WalkLeft", true); 
+            animator.SetBool("WalkRight", false); 
+        }
+        else if (horizontalMovement > 0)
+        {
+            animator.SetBool("WalkLeft", false); 
+            animator.SetBool("WalkRight", true); 
+        }
+        else
+        {
+            animator.SetBool("WalkLeft", false);
+            animator.SetBool("WalkRight", false);
+        }
+        if (rb.linearVelocity.y > 0) 
+        {
+            if (horizontalMovement < 0)
+            {
+                animator.SetBool("JumpLeft", true);  
+                animator.SetBool("JumpRight", false); 
+            }
+            else if (horizontalMovement > 0)
+            {
+                animator.SetBool("JumpLeft", false); 
+                animator.SetBool("JumpRight", true); 
+            }
+            else
+            {
+                
+                if (transform.localScale.x < 0) 
+                {
+                    animator.SetBool("JumpLeft", true);
+                    animator.SetBool("JumpRight", false);
+                }
+                else
+                {
+                    animator.SetBool("JumpLeft", false);
+                    animator.SetBool("JumpRight", true);
+                }
+            }
+        }
+        else if (rb.linearVelocity.y < 0)
+        {
+            if (horizontalMovement < 0)
+            {
+                animator.SetBool("JumpLeft", true);
+                animator.SetBool("JumpRight", false);
+            }
+            else if (horizontalMovement > 0)
+            {
+                animator.SetBool("JumpLeft", false);
+                animator.SetBool("JumpRight", true);
+            }
+        }
+        else
+        {
+            animator.SetBool("JumpLeft", false);
+            animator.SetBool("JumpRight", false);
+        }
+
     }
 
     private void Gravity()
@@ -61,6 +125,7 @@ public class PlayerMovement : MonoBehaviour
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
                 jumpsRemaining--;
             }
+            
         }
     }
 
@@ -69,6 +134,8 @@ public class PlayerMovement : MonoBehaviour
         if(Physics2D.OverlapBox(groundCheckPos.position, groundCheckSize, 0, groundLayer))
         {
             jumpsRemaining = maxJumps;
+            animator.SetBool("JumpLeft", false);
+            animator.SetBool("JumpRight", false);
         }
     }
 
